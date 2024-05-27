@@ -21,13 +21,14 @@ pipeline {
                 }
             }
         }
-        stage("Run docker compose") {
-            steps {
-                script {
-                    def projectDir = "C:\ProgramData\Jenkins\.jenkins\workspace\firstpipeline"
-                    bat "cd \"${projectDir}\" && docker-compose up -d"
-                }
-            }
+      stage("Run docker compose") {
+    steps {
+        script {
+            def projectDir = "C:\\ProgramData\\Jenkins\\.jenkins\\workspace\\firstpipeline"
+            bat "cd \"${projectDir}\" && docker-compose up -d"
         }
+    }
+}
+
     }
 }
