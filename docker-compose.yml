@@ -1,6 +1,6 @@
 services:
 # Spring Boot Application
   spring-boot-app:
-    image: docexp1.spring
+    image: tp-spring.spring
     ports:
      - "0.0.0.0:8085:8080"
