@@ -22,13 +22,14 @@ pipeline {
                 bat "git clone https://github.com/abir5255/exp1spring1.git"
             }
         }
-        stage('Build') {
-            steps {
-                dir("exp1spring1") { // Ensure this matches the cloned directory
-                    bat "mvn clean install"
-                }
-            }
+       stage('Build') {
+    steps {
+        dir("exp1spring1") {
+            bat "mvn clean install"
         }
+    }
+}
+
         stage('SonarQube Analysis') {
             environment {
                 scannerHome = tool name: 'SonarQubeScanner', type: 'hudson.plugins.sonar.SonarRunnerInstallation' // Ensure 'SonarQubeScanner' is correctly configured
