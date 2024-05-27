@@ -1,0 +1,29 @@
+pipeline {
+    agent any
+    tools {
+        maven 'maven' 
+    }
+    stages {
+       
+        stage ("Clone repo") {
+            steps {
+                bat "git clone https://github.com/abir5255/tp1spring.git"
+            }
+        }
+        stage("Generate backend image") {
+            steps {
+                dir("tp1spring") {
+                    bat "mvn clean install"
+                    bat "docker build -t docexp-spring ."
+                }
+            }
+        }
+        stage("Run docker compose") {
+            steps {
+                dir("tp1spring") {
+                    bat "docker-compose up -d"
+                }
+            }
+        }
+    }
+}
