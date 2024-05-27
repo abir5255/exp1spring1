@@ -1,13 +1,19 @@
 pipeline {
     agent any
     tools {
-        maven 'maven' 
+        maven 'maven'
     }
     stages {
-       
-        stage ("Clone repo") {
+        stage("Clone repo") {
             steps {
-                bat "git clone https://github.com/abir5255/exp1spring1.git"
+                script {
+                    def repoDir = 'tp1spring'
+                    if (fileExists(repoDir)) {
+                        echo "Directory ${repoDir} exists. Deleting it..."
+                        deleteDir()
+                    }
+                }
+                bat "git clone https://github.com/abir5255/exp1spring1.git tp1spring"
             }
         }
         stage("Generate backend image") {
@@ -24,6 +30,11 @@ pipeline {
                     bat "docker-compose up -d"
                 }
             }
+        }
+    }
+    post {
+        always {
+            cleanWs()
         }
     }
 }
