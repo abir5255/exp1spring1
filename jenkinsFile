@@ -18,21 +18,25 @@ pipeline {
         }
         stage("Clone repo") {
             steps {
+                // Corrected the git repository URL
                 sh "git clone https://github.com/abir5255/exp1spring1.git"
             }
         }
         stage('Build') {
             steps {
-                dir("exp1spring1") { // Assurez-vous que ce répertoire correspond à celui cloné
+                dir("exp1spring1") { // Ensure this matches the cloned directory
                     sh "mvn clean install"
                 }
             }
         }
         stage('SonarQube Analysis') {
+            environment {
+                scannerHome = tool 'SonarQubeScanner' // Ensure 'SonarQubeScanner' is correctly configured
+            }
             steps {
-                withSonarQubeEnv('sonar-server') { // Assurez-vous que 'sonar-server' est correctement configuré dans Jenkins
+                withSonarQubeEnv('sonar-server') { // Ensure 'sonar-server' is correctly configured
                     dir("exp1spring1") {
-                        sh 'mvn sonar:sonar'
+                        sh "${scannerHome}/bin/sonar-scanner"
                     }
                 }
             }
