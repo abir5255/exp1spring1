@@ -22,11 +22,11 @@ pipeline {
             }
         }
 
-       stage("Run docker compose") {
+           stage("Run docker compose") {
             steps {
                 dir("exp1spring1") {
-                    // Remplacez le chemin ci-dessous par le chemin réel de docker-compose.exe sur votre système
-                    bat '"C:\\Program Files\\Docker\\Docker\\resources\\bin\\docker-compose.exe" up -d'
+                    // Exécution de docker-compose sans nohup
+                    bat "docker-compose up -d"
                 }
             }
         }
