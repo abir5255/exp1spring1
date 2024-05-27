@@ -19,24 +19,24 @@ pipeline {
         stage("Clone repo") {
             steps {
                 // Corrected the git repository URL
-                sh "git clone https://github.com/abir5255/exp1spring1.git"
+                bat "git clone https://github.com/abir5255/exp1spring1.git"
             }
         }
         stage('Build') {
             steps {
                 dir("exp1spring1") { // Ensure this matches the cloned directory
-                    sh "mvn clean install"
+                    bat "mvn clean install"
                 }
             }
         }
         stage('SonarQube Analysis') {
             environment {
-                scannerHome = tool 'SonarQubeScanner' // Ensure 'SonarQubeScanner' is correctly configured
+                scannerHome = tool name: 'SonarQubeScanner', type: 'hudson.plugins.sonar.SonarRunnerInstallation' // Ensure 'SonarQubeScanner' is correctly configured
             }
             steps {
                 withSonarQubeEnv('sonar-server') { // Ensure 'sonar-server' is correctly configured
                     dir("exp1spring1") {
-                        sh "${scannerHome}/bin/sonar-scanner"
+                        bat "${scannerHome}\\bin\\sonar-scanner"
                     }
                 }
             }
@@ -45,10 +45,10 @@ pipeline {
             steps {
                 dir("exp1spring1") {
                     script {
-                        pom = readMavenPom file: "pom.xml"
-                        filesByGlob = findFiles(glob: "target/*.${pom.packaging}")
+                        def pom = readMavenPom file: "pom.xml"
+                        def filesByGlob = findFiles(glob: "target/*.${pom.packaging}")
                         if (filesByGlob.length > 0) {
-                            artifactPath = filesByGlob[0].path
+                            def artifactPath = filesByGlob[0].path
                             echo "*** File: ${artifactPath}, group: ${pom.groupId}, packaging: ${pom.packaging}, version: ${pom.version}"
                             nexusArtifactUploader(
                                 nexusVersion: NEXUS_VERSION,
