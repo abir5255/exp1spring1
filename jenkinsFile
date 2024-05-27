@@ -22,13 +22,14 @@ pipeline {
     }
 }
 
- stage("Run docker compose") {
+stage("Run docker compose") {
     steps {
-            dir("exp1spring1") {
-                sh " docker compose up -d"
-            }
+        dir("exp1spring1") {
+            sh "docker-compose up -d"
+        }
     }
 }
+
 
 
     }
