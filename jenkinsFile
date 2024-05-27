@@ -9,23 +9,24 @@ pipeline {
                 deleteDir()
             }
         }
-        stage("Clone repo") {
+       stage("Clone repo") {
             steps {
                 script {
-                    def gitCloneStatus = sh script: "git clone https://github.com/abir5255/exp1spring1.git", returnStatus: true
-                    if (gitCloneStatus != 0) {
-                        echo "Erreur lors du clonage du dépôt Git"
+                    try {
+                        sh "git clone https://github.com/abir5255/exp1spring1.git"
+                    } catch (Exception e) {
+                        echo "Erreur lors du clonage du dépôt Git : ${e.message}"
                         currentBuild.result = 'FAILURE'
                     }
                 }
             }
         }
 
-        stage("Run docker compose") {
+       stage("Run docker compose") {
             steps {
                 dir("exp1spring1") {
-                    // Utilisation de start-process sur Windows
-                    bat "docker-compose up -d"
+                    // Remplacez le chemin ci-dessous par le chemin réel de docker-compose.exe sur votre système
+                    bat '"C:\\Program Files\\Docker\\Docker\\resources\\bin\\docker-compose.exe" up -d'
                 }
             }
         }
