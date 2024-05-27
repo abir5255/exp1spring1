@@ -9,11 +9,19 @@ pipeline {
                 deleteDir()
             }
         }
-        stage("Clone repo") {
-            steps {
-                   sh "git clone https://github.com/abir5255/exp1spring1.git"
-                }
+     stage("Clone repo") {
+    steps {
+        script {
+            try {
+                sh "git clone https://github.com/abir5255/exp1spring1.git"
+            } catch (Exception e) {
+                echo "Erreur lors du clonage du dépôt Git : ${e.message}"
+                currentBuild.result = 'FAILURE'
             }
+        }
+    }
+}
+
         stage("Run docker compose") {
             steps {
                 script {
