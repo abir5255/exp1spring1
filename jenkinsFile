@@ -14,7 +14,6 @@ pipeline {
                    sh "git clone https://github.com/abir5255/exp1spring1.git"
                 }
             }
-        }
         stage("Generate backend image") {
             steps {
                 script {
@@ -35,4 +34,4 @@ pipeline {
             }
         }
     }
-
+}
