@@ -26,7 +26,8 @@ pipeline {
             steps {
                 dir("exp1spring1") {
                     // Exécution de docker-compose sans nohup
-                    bat "docker-compose up -d"
+                   bat "docker-compose -f monfichier.yml up -d"
+
                 }
             }
         }
