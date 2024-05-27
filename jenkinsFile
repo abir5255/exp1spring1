@@ -29,8 +29,5 @@ stage("Run docker compose") {
         }
     }
 }
-
-
-
     }
 }
