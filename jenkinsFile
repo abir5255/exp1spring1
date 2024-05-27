@@ -24,7 +24,7 @@ pipeline {
         stage("Run docker compose") {
             steps {
                 script {
-                    def projectDir = "C:\ProgramData\Jenkins\.jenkins\workspace\firstpipeline"
+                    def projectDir = "C:/ProgramData/Jenkins/.jenkins/workspace/firstpipeline/exp1spring1"
                     bat "cd \"${projectDir}\" && docker-compose up -d"
                 }
             }
