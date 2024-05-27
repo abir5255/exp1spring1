@@ -12,10 +12,9 @@ pipeline {
         stage("Clone repo") {
             steps {
                 script {
-                    try {
-                        sh "git clone https://github.com/abir5255/exp1spring1.git"
-                    } catch (Exception e) {
-                        echo "Erreur lors du clonage du dépôt Git : ${e.message}"
+                    def gitCloneStatus = sh script: "git clone https://github.com/abir5255/exp1spring1.git", returnStatus: true
+                    if (gitCloneStatus != 0) {
+                        echo "Erreur lors du clonage du dépôt Git"
                         currentBuild.result = 'FAILURE'
                     }
                 }
@@ -25,7 +24,8 @@ pipeline {
         stage("Run docker compose") {
             steps {
                 dir("exp1spring1") {
-                    sh "docker-compose up -d"
+                    // Utilisation de start-process sur Windows
+                    bat "docker-compose up -d"
                 }
             }
         }
