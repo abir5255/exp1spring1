@@ -12,9 +12,10 @@ pipeline {
         stage("Clone repo") {
             steps {
                 script {
-                    def gitCloneStatus = sh script: "git clone https://github.com/abir5255/exp1spring1.git", returnStatus: true
-                    if (gitCloneStatus != 0) {
-                        echo "Erreur lors du clonage du dépôt Git"
+                    try {
+                        sh "git clone https://github.com/abir5255/exp1spring1.git"
+                    } catch (Exception e) {
+                        echo "Erreur lors du clonage du dépôt Git : ${e.message}"
                         currentBuild.result = 'FAILURE'
                     }
                 }
