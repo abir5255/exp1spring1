@@ -25,7 +25,7 @@ pipeline {
  stage("Run docker compose") {
     steps {
         script {
-            dir("exp1spring1") {
+            dir("tp1spring") {
                 sh "start /B docker-compose up -d"
             }
         }
