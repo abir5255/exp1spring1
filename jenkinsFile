@@ -11,45 +11,41 @@ pipeline {
         NEXUS_CREDENTIAL_ID = "nexus-user-credentials"
     }
     stages {
-        stage ("Clean up"){
+        stage("Clean up") {
             steps {
                 deleteDir()
             }
         }
-        stage ("Clone repo"){
+        stage("Clone repo") {
             steps {
-                sh "git clone https://github.com/abir5255/exp1spring1.gitt"
+                sh "git clone https://github.com/abir5255/exp1spring1.git"
             }
         }
         stage('Build') {
             steps {
-                dir("exp1-spring"){
-                      sh "mvn clean install"
-                  }
+                dir("exp1spring1") { // Assurez-vous que ce répertoire correspond à celui cloné
+                    sh "mvn clean install"
+                }
             }
         }
         stage('SonarQube Analysis') {
             steps {
-                withSonarQubeEnv('sonar-server') {
-                    dir("exp1-spring"){
+                withSonarQubeEnv('sonar-server') { // Assurez-vous que 'sonar-server' est correctement configuré dans Jenkins
+                    dir("exp1spring1") {
                         sh 'mvn sonar:sonar'
                     }
                 }
             }
         }
-
         stage("Publish to Nexus Repository Manager") {
             steps {
-                 dir("exp1-spring"){
-
-                     script {
-                        pom = readMavenPom file: "pom.xml";
-                        filesByGlob = findFiles(glob: "target/*.${pom.packaging}");
-                        echo "${filesByGlob[0].name} ${filesByGlob[0].path} ${filesByGlob[0].directory} ${filesByGlob[0].length} ${filesByGlob[0].lastModified}"
-                        artifactPath = filesByGlob[0].path;
-                        artifactExists = fileExists artifactPath;
-                        if(artifactExists) {
-                            echo "*** File: ${artifactPath}, group: ${pom.groupId}, packaging: ${pom.packaging}, version ${pom.version}";
+                dir("exp1spring1") {
+                    script {
+                        pom = readMavenPom file: "pom.xml"
+                        filesByGlob = findFiles(glob: "target/*.${pom.packaging}")
+                        if (filesByGlob.length > 0) {
+                            artifactPath = filesByGlob[0].path
+                            echo "*** File: ${artifactPath}, group: ${pom.groupId}, packaging: ${pom.packaging}, version: ${pom.version}"
                             nexusArtifactUploader(
                                 nexusVersion: NEXUS_VERSION,
                                 protocol: NEXUS_PROTOCOL,
@@ -60,23 +56,26 @@ pipeline {
                                 credentialsId: NEXUS_CREDENTIAL_ID,
                                 artifacts: [
                                     [artifactId: pom.artifactId,
-                                    classifier: '',
-                                    file: artifactPath,
-                                    type: pom.packaging],
+                                     classifier: '',
+                                     file: artifactPath,
+                                     type: pom.packaging],
                                     [artifactId: pom.artifactId,
-                                    classifier: '',
-                                    file: "pom.xml",
-                                    type: "pom"]
+                                     classifier: '',
+                                     file: "pom.xml",
+                                     type: "pom"]
                                 ]
-                            );
+                            )
                         } else {
-                        error "*** File: ${artifactPath}, could not be found";
+                            error "*** File matching target/*.${pom.packaging} could not be found"
                         }
-                    }    
+                    }
                 }
             }
         }
-
-        
+    }
+    post {
+        always {
+            cleanWs()
+        }
     }
 }
