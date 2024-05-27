@@ -22,11 +22,11 @@ pipeline {
     }
 }
 
-       stage("Run docker compose") {
+ stage("Run docker compose") {
     steps {
         script {
             dir("exp1spring1") {
-                sh "C:\ProgramData\Jenkins\.jenkins\workspace\firstpipeline\exp1spring1 up -d" 
+                sh "docker-compose up -d" 
             }
         }
     }
